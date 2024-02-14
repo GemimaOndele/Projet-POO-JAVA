@@ -115,8 +115,11 @@ IA Dark Vador
 
  
   Exemple d'utilisation :
+  
   Joueur 1 :  bloquer 3 (bloque la colonne 3 pour les 3 prochains tours)
+  
   Joueur 2 :  4 (peut jouer normalement dans les colonnes non bloquées)
+  
   Joueur 1 :  debloquer 3 (libère la colonne 3, prête à être utilisée à nouveau)
   
   L'intégration de cette fonctionnalité nécessitera des ajustements dans l'interface 
