@@ -2,8 +2,6 @@ package Modele;
 
 //Etape 3 : Joueurs
 
-import static java.lang.Thread.sleep;
-
 // JoueurHumain.java
 public class JoueurHumain implements Joueur {
     private int colonneChoisie = -1;
@@ -14,7 +12,7 @@ public class JoueurHumain implements Joueur {
         // Attente jusqu'à ce que le joueur choisisse une colonne
         while (colonneChoisie == -1) {
             try {
-                sleep(100); // Pause pour éviter la surcharge du processeur
+                Thread.sleep(100); // Pause pour éviter la surcharge du processeur
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
