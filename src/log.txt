@@ -1,0 +1,2 @@
+Date: 2024-04-07 17:53:26 - Joueurs: Alice vs Bob - Vainqueur: Alice - Scores -> Alice: 4 points, Bob: 2 points - Temps de jeu: 360s
+Date: 2024-04-07 18:10:42 - Joueurs: Alice vs Bob - Vainqueur: Alice - Scores -> Alice: 4 points, Bob: 2 points - Temps de jeu: 360s

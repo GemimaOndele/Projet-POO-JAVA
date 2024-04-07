@@ -1,14 +1,19 @@
+
 //Étape 2 : Gestionnaire de Partie pour le jeu Puissance 4(Puissance4GUI)
-// Cela inclut la gestion de la grille, les tours des joueurs,
-// la détection de la fin de la partie, ainsi que l'affichage du résultat
-// et d'autres fonctionnalités liées à la gestion de la partie.
+
+/* Cela inclut la gestion de la grille, les tours des joueurs,
+la détection de la fin de la partie, ainsi que l'affichage du résultat
+et d'autres fonctionnalités liées à la gestion de la partie. */
+
 package Modele;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -36,7 +41,6 @@ public class GestionnairePartie {
     private Timer chronometreTour;
     private Timer chronoTempsJeu;
 
-    // Constructeur
     public GestionnairePartie(String joueur1Nom, String joueur2Nom, String joueur1Pion, String joueur2Pion) {
         this.joueur1Nom = joueur1Nom;
         this.joueur2Nom = joueur2Nom;
@@ -50,7 +54,6 @@ public class GestionnairePartie {
         this.tempsTotalJoueur2 = 0;
     }
 
-    // Méthode pour commencer une nouvelle partie
     public void commencerPartie() {
         if (partieTerminee) {
             partieTerminee = false;
@@ -59,18 +62,16 @@ public class GestionnairePartie {
             tempsDebutPartie = System.currentTimeMillis();
 
             SwingUtilities.invokeLater(() -> {
-                // Création de la fenêtre de jeu
                 JFrame frame = new JFrame("Puissance 4");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setLayout(new BorderLayout());
 
                 JPanel grillePanel = new JPanel(new GridLayout(6, 7));
-                creerBoutonsGrille(grillePanel); // Création de la grille de boutons
+                creerBoutonsGrille(grillePanel);
 
                 JPanel mainPanel = new JPanel(new BorderLayout());
                 mainPanel.add(grillePanel, BorderLayout.CENTER);
 
-                // Affichage du score et du chrono
                 scoreLabel = new JLabel("", SwingConstants.CENTER);
                 afficherScoreInitial();
                 mainPanel.add(scoreLabel, BorderLayout.SOUTH);
@@ -92,26 +93,23 @@ public class GestionnairePartie {
                 frame.setVisible(true);
             });
 
-            demarrerTourChronometre(); // Démarre le chrono pour le tour
-            demarrerChronoTempsJeu(); // Démarre le chrono pour le temps de jeu total
+            demarrerTourChronometre();
+            demarrerChronoTempsJeu();
         } else {
             afficherMessage("La partie est déjà en cours!");
         }
     }
 
-    // Méthode pour afficher le score initial
     private void afficherScoreInitial() {
         SwingUtilities.invokeLater(() -> scoreLabel.setText("Score initial : " + joueur1Nom + " = 0 points, " + joueur2Nom + " = 0 points"));
     }
 
-    // Méthode pour initialiser la grille de jeu
     private void initialiserGrille() {
         for (char[] chars : grille) {
             Arrays.fill(chars, ' ');
         }
     }
 
-    // Méthode pour créer la grille de boutons
     private void creerBoutonsGrille(JPanel grillePanel) {
         boutonsGrille = new JButton[6][7];
 
@@ -119,20 +117,18 @@ public class GestionnairePartie {
             for (int j = 0; j < grille[i].length; j++) {
                 boutonsGrille[i][j] = new JButton("");
                 boutonsGrille[i][j].setPreferredSize(new Dimension(50, 50));
-                boutonsGrille[i][j].addActionListener(new ColonneListener(j)); // Ajout d'un ActionListener pour chaque bouton
+                boutonsGrille[i][j].addActionListener(new ColonneListener(j));
                 grillePanel.add(boutonsGrille[i][j]);
             }
         }
     }
 
-    // Méthode pour démarrer le chrono du tour
     private void demarrerTourChronometre() {
         chronometreTour = new Timer();
         tempsDebutTour = System.currentTimeMillis();
         chronometreTour.scheduleAtFixedRate(new ChronoTask(), 0, 1000);
     }
 
-    // Méthode pour arrêter le chrono du tour
     private void stopperTourChronometre() {
         if (chronometreTour != null) {
             chronometreTour.cancel();
@@ -140,13 +136,11 @@ public class GestionnairePartie {
         }
     }
 
-    // Méthode pour démarrer le chrono du temps de jeu total
     private void demarrerChronoTempsJeu() {
         chronoTempsJeu = new Timer();
         chronoTempsJeu.scheduleAtFixedRate(new ChronoTempsJeuTask(), 0, 1000);
     }
 
-    // Méthode pour arrêter le chrono du temps de jeu total
     private void stopperChronoTempsJeu() {
         if (chronoTempsJeu != null) {
             chronoTempsJeu.cancel();
@@ -154,7 +148,6 @@ public class GestionnairePartie {
         }
     }
 
-    // Classe interne pour gérer le chrono du tour
     private class ChronoTask extends TimerTask {
         @Override
         public void run() {
@@ -171,7 +164,6 @@ public class GestionnairePartie {
         }
     }
 
-    // Classe interne pour gérer les actions sur les boutons de la grille
     private class ColonneListener implements ActionListener {
         private final int colonne;
 
@@ -197,7 +189,6 @@ public class GestionnairePartie {
         }
     }
 
-    // Méthode pour placer un pion dans la grille
     private int placerPion(int colonne) {
         int ligne;
         for (ligne = grille.length - 1; ligne >= 0; ligne--) {
@@ -210,7 +201,6 @@ public class GestionnairePartie {
         return -1;
     }
 
-    // Méthode pour vérifier s'il y a une victoire
     private boolean victoire(int ligne, int colonne) {
         char pion = pionActuel();
         return (compterPions(ligne, colonne, 1, 0, pion) + compterPions(ligne, colonne, -1, 0, pion) >= 3) ||
@@ -219,7 +209,6 @@ public class GestionnairePartie {
                 (compterPions(ligne, colonne, 1, -1, pion) + compterPions(ligne, colonne, -1, 1, pion) >= 3);
     }
 
-    // Méthode pour compter le nombre de pions alignés dans une direction donnée
     private int compterPions(int ligne, int colonne, int deltaLigne, int deltaColonne, char pion) {
         int compteur = 0;
         int i = ligne + deltaLigne;
@@ -232,7 +221,6 @@ public class GestionnairePartie {
         return compteur;
     }
 
-    // Méthode pour vérifier si la grille est pleine
     private boolean grillePleine() {
         for (char[] ligne : grille) {
             for (char c : ligne) {
@@ -244,7 +232,6 @@ public class GestionnairePartie {
         return true;
     }
 
-    // Méthode pour passer au joueur suivant
     private void changerJoueur() {
         long tempsEcoule = System.currentTimeMillis() - tempsDebutTour;
         if (tourActuel % 2 == 1) {
@@ -259,7 +246,6 @@ public class GestionnairePartie {
         demarrerTourChronometre();
     }
 
-    // Méthode pour mettre à jour l'affichage du bouton après avoir placé un pion
     private void mettreAJourBouton(int ligne, int colonne) {
         char pion = pionActuel();
         String couleurPion = pion == joueur1Pion.charAt(0) ? "blue" : "red";
@@ -268,38 +254,22 @@ public class GestionnairePartie {
         boutonsGrille[ligne][colonne].setEnabled(false);
     }
 
-    // Méthode pour obtenir le pion du joueur actuel
     private char pionActuel() {
         return tourActuel % 2 == 1 ? joueur1Pion.charAt(0) : joueur2Pion.charAt(0);
     }
 
-    // Méthode pour gérer la fin de la partie
     private void finDePartie() {
         String vainqueur = determinerVainqueur();
         long tempsEcoule = System.currentTimeMillis() - tempsDebutPartie;
-
-        // Calcul du temps total écoulé pour chaque joueur
         tempsTotalJoueur1 += tempsEcoule;
         tempsTotalJoueur2 += tempsEcoule;
 
         SwingUtilities.invokeLater(() -> {
-            int pionsJoueur1 = compterPionsPlacés(joueur1Pion.charAt(0));
-            int pionsJoueur2 = compterPionsPlacés(joueur2Pion.charAt(0));
-
+            int pionsJoueur1 = compterPionsPlaces(joueur1Pion.charAt(0));
+            int pionsJoueur2 = compterPionsPlaces(joueur2Pion.charAt(0));
             String scoreText = "Score : " + joueur1Nom + " = " + pionsJoueur1 + " points, " + joueur2Nom + " = " + pionsJoueur2 + " points. ";
-
-            // Vérifier s'il y a un vainqueur
             if (vainqueur != null) {
-                int scoreBonus;
-                if (vainqueur.equals(joueur1Nom) && tempsTotalJoueur1 < tempsTotalJoueur2) {
-                    scoreBonus = pionsJoueur1 * 2;
-                } else if (vainqueur.equals(joueur2Nom) && tempsTotalJoueur2 < tempsTotalJoueur1) {
-                    scoreBonus = pionsJoueur2 * 2;
-                } else {
-                    scoreBonus = 0; // Aucun score bonus si les conditions ne sont pas remplies
-                }
-
-                // Affichage du score avec ou sans score bonus
+                int scoreBonus = vainqueur.equals(joueur1Nom) ? pionsJoueur1 * 2 : pionsJoueur2 * 2;
                 scoreText += vainqueur + " est le vainqueur avec un score bonus de " + scoreBonus + ". Félicitations ! 🎉";
                 afficherMessage("Le vainqueur est : " + vainqueur + ". Félicitations ! 🎉\n" +
                         "Score : " + joueur1Nom + " = " + pionsJoueur1 + " points, " + joueur2Nom + " = " + pionsJoueur2 + " points.\n" +
@@ -308,16 +278,26 @@ public class GestionnairePartie {
                 scoreText += "La partie est nulle.";
                 afficherMessage("La partie est nulle.");
             }
-
             scoreLabel.setText(scoreText);
             tempsJeuLabel.setText("Temps de jeu total : " + (tempsEcoule / 1000) + " sec");
         });
 
         terminerPartie();
+
+        // Déterminer les détails de la partie pour l'enregistrement
+        // Déterminer les détails de la partie pour l'enregistrement
+        String detailsPartie = "Partie terminée le " + new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(new Date()) +
+                "\nVainqueur: " + determinerVainqueur() +
+                "\nTemps de jeu total: " + ((System.currentTimeMillis() - tempsDebutPartie) / 1000) + " sec" +
+                "\nPions Joueur 1 (" + joueur1Nom + "): " + compterPionsPlaces(joueur1Pion.charAt(0)) +
+                "\nPions Joueur 2 (" + joueur2Nom + "): " + compterPionsPlaces(joueur2Pion.charAt(0)) + "\n";
+
+        // Enregistrer les détails de la partie dans l'historique
+        HistoriquePartie.enregistrerPartie(detailsPartie);
+
     }
 
-    // Méthode pour compter les pions placés sur la grille
-    private int compterPionsPlacés(char pion) {
+    private int compterPionsPlaces(char pion) {
         int count = 0;
         for (char[] ligne : grille) {
             for (char c : ligne) {
@@ -329,10 +309,9 @@ public class GestionnairePartie {
         return count;
     }
 
-    // Méthode pour déterminer le vainqueur de la partie
     private String determinerVainqueur() {
-        int pionsJoueur1 = compterPionsPlacés(joueur1Pion.charAt(0));
-        int pionsJoueur2 = compterPionsPlacés(joueur2Pion.charAt(0));
+        int pionsJoueur1 = compterPionsPlaces(joueur1Pion.charAt(0));
+        int pionsJoueur2 = compterPionsPlaces(joueur2Pion.charAt(0));
 
         String vainqueur = null;
 
@@ -345,12 +324,10 @@ public class GestionnairePartie {
         return vainqueur;
     }
 
-    // Méthode pour afficher un message
     private void afficherMessage(String message) {
         JOptionPane.showMessageDialog(null, message);
     }
 
-    // Classe interne pour gérer le chrono du temps de jeu total
     private class ChronoTempsJeuTask extends TimerTask {
         @Override
         public void run() {
@@ -358,18 +335,35 @@ public class GestionnairePartie {
         }
     }
 
-    // Méthode pour terminer la partie
     private void terminerPartie() {
         stopperTourChronometre();
         stopperChronoTempsJeu();
         partieTerminee = true;
     }
 
-    // Méthode principale (main) pour lancer une partie
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             GestionnairePartie gestionnairePartie = new GestionnairePartie("Joueur 1", "Joueur 2", "X", "O");
             gestionnairePartie.commencerPartie();
         });
     }
+    public static class GameManager {
+        private boolean[] blockedColumns;
+    
+        public GameManager(int numColumns) {
+            blockedColumns = new boolean[numColumns];
+        }
+    
+        public void blockColumn(int column) {
+            blockedColumns[column] = true;
+        }
+    
+        public void unblockColumn(int column) {
+            blockedColumns[column] = false;
+        }
+    
+        public boolean isColumnBlocked(int column) {
+            return blockedColumns[column];
+        }
+    }    
 }

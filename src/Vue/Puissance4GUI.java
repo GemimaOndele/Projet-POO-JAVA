@@ -1,24 +1,14 @@
-package Vue;
-
 // Étape 1 : Interface Graphique
 //Puissance4GUI.java
-
-import Modele.GestionnairePartie;
+package Vue;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class Puissance4GUI {
-    private final ImageIcon joueur1Icon;
-    private final ImageIcon joueur2Icon;
 
-    public Puissance4GUI(ImageIcon joueur1Icon, ImageIcon joueur2Icon) {
-        this.joueur1Icon = joueur1Icon;
-        this.joueur2Icon = joueur2Icon;
-    }
-
-    public void lancerConfigurationPartie() {
-        // Afficher le menu interactif pour choisir le type de joueur
+    public static void main(String[] args) {
+        // Configuration initiale du jeu via JOptionPane
         String[] options = {"Joueur Humain", "IA"};
         int choixJoueur1 = JOptionPane.showOptionDialog(
                 null,
@@ -30,10 +20,8 @@ public class Puissance4GUI {
                 options,
                 options[0]);
 
-        // Récupérer le nom du Joueur 1
         String joueur1Nom = JOptionPane.showInputDialog("Nom du Joueur 1:");
 
-        // Afficher le menu interactif pour choisir le type de joueur 2
         int choixJoueur2 = JOptionPane.showOptionDialog(
                 null,
                 "Choisissez le type de Joueur 2:",
@@ -44,36 +32,35 @@ public class Puissance4GUI {
                 options,
                 options[0]);
 
-        // Récupérer le nom du Joueur 2
         String joueur2Nom = JOptionPane.showInputDialog("Nom du Joueur 2:");
 
-        // Attribuer les pions par défaut "X" et "O"
-        String joueur1Pion = "X";
-        String joueur2Pion = "O";
-
-        // Afficher les informations des joueurs dans une boîte de dialogue
         JOptionPane.showMessageDialog(null,
-                "Joueur 1 (" + (choixJoueur1 == 0 ? "Humain" : "IA") + "): " + joueur1Nom + " - Pion: " + joueur1Pion + "\n" +
-                        "Joueur 2 (" + (choixJoueur2 == 0 ? "Humain" : "IA") + "): " + joueur2Nom + " - Pion: " + joueur2Pion,
+                "Joueur 1 (" + (choixJoueur1 == 0 ? "Humain" : "IA") + "): " + joueur1Nom + " - Pion: X" + "\n" +
+                        "Joueur 2 (" + (choixJoueur2 == 0 ? "Humain" : "IA") + "): " + joueur2Nom + " - Pion: O",
                 "Configuration de la Partie",
                 JOptionPane.INFORMATION_MESSAGE);
 
-        // Ici, on crée une instance de la classe GestionnairePartie et commencer la partie
-        // Créer une instance de la classe GestionnairePartie
-        GestionnairePartie gestionnaire = new GestionnairePartie(joueur1Nom, joueur2Nom, joueur1Pion, joueur2Pion);
+        // Création de la fenêtre principale du jeu
+        JFrame fenetrePrincipale = new JFrame("Puissance 4");
+        fenetrePrincipale.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        fenetrePrincipale.setSize(800, 600);
+        fenetrePrincipale.setLayout(new FlowLayout()); // Utilisez un gestionnaire de mise en page approprié
 
-        // Commencer la partie
+        // Bouton pour afficher l'historique
+        JButton btnHistorique = new JButton("Afficher l'historique");
+        btnHistorique.addActionListener(e -> {
+            // Modifier ici pour appeler directement afficherHistorique
+            new Vue.Puissance5GUI().afficherHistorique();
+        });
+
+        fenetrePrincipale.add(btnHistorique);
+
+        // Afficher la fenêtre principale
+        fenetrePrincipale.setVisible(true);
+
+        // Créer et démarrer une instance du jeu
+        // Remarque : Assurez-vous que votre GestionnairePartie enregistre correctement les parties dans le fichier d'historique
+        Modele.GestionnairePartie gestionnaire = new Modele.GestionnairePartie(joueur1Nom, joueur2Nom, "X", "O");
         gestionnaire.commencerPartie();
-
-        // Ajouter la grille à la fenêtre principale
-        JFrame frame = new JFrame("Puissance 4");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new BorderLayout());
-
-        GrillePanel grillePanel = new GrillePanel(joueur1Icon, joueur2Icon); // Créer la grille avec les icônes
-        frame.add(grillePanel, BorderLayout.CENTER);
-
-        frame.pack();
-        frame.setVisible(true);
     }
 }
